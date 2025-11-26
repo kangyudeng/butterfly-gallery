@@ -169,10 +169,23 @@ function initApp(THREE) {
 
     content.innerHTML = '';
     files.forEach(f => {
-      const img = document.createElement('img');
-      img.src = './' + f;
-      img.alt = cat;
-      content.appendChild(img);
+      if (f.endsWith('.mp4') || f.endsWith('.webm')) {
+        // Video support
+        const video = document.createElement('video');
+        video.src = './' + f;
+        video.alt = cat;
+        video.controls = true;
+        video.style.width = '100%';
+        video.style.height = 'auto';
+        video.style.borderRadius = '12px';
+        content.appendChild(video);
+      } else {
+        // Image
+        const img = document.createElement('img');
+        img.src = './' + f;
+        img.alt = cat;
+        content.appendChild(img);
+      }
     });
 
     modal.classList.remove('hidden');
