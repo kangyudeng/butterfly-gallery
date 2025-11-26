@@ -1,5 +1,8 @@
 // Main JS: particle landing + gallery builder
 
+// GitHub raw content CDN
+const CDN_BASE = 'https://raw.githubusercontent.com/kangyudeng/butterfly-gallery/main/';
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
   // Wait for THREE to load
@@ -81,7 +84,7 @@ function initApp(THREE) {
 
   // Animation loop
   let progress = 0;
-  const duration = 5000; // 5 seconds for smoother animation
+  const duration = 5000; // 5 seconds
   let startTime = Date.now();
   let animating = true;
 
@@ -100,8 +103,6 @@ function initApp(THREE) {
     }
 
     geometry.attributes.position.needsUpdate = true;
-    
-    // Rotate butterfly
     points.rotation.y += 0.002 * (1 - progress * 0.5);
     points.rotation.x += 0.0005 * Math.sin(elapsed / 3000);
 
@@ -111,7 +112,6 @@ function initApp(THREE) {
       requestAnimationFrame(animate);
     } else {
       animating = false;
-      // Show CTA
       cta.style.opacity = '1';
       cta.style.transform = 'translateY(0)';
     }
@@ -119,7 +119,6 @@ function initApp(THREE) {
 
   animate();
 
-  // Click to enter
   function enterSite() {
     if (!animating && progress >= 0.9) {
       landing.style.transition = 'opacity 0.8s ease';
@@ -140,14 +139,12 @@ function initApp(THREE) {
     renderer.setSize(w, h);
   });
 
-  // Utils
   function lerp(a, b, t) { return a + (b - a) * t; }
   function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 
-  // Build gallery
   async function buildGallery() {
     try {
-      const res = await fetch('./images.json');
+      const res = await fetch(CDN_BASE + 'images.json');
       if (!res.ok) throw new Error('Failed to fetch images.json');
       const data = await res.json();
       const categoriesEl = document.getElementById('categories');
@@ -163,7 +160,7 @@ function initApp(THREE) {
         card.className = 'card';
 
         const img = document.createElement('img');
-        img.src = './' + preview;
+        img.src = CDN_BASE + preview;
         img.alt = cat;
 
         const label = document.createElement('div');
@@ -176,7 +173,7 @@ function initApp(THREE) {
         categoriesEl.appendChild(card);
       }
     } catch (err) {
-      console.error('Failed to load images.json:', err);
+      console.error('Failed to load gallery:', err);
       const el = document.getElementById('categories');
       if (el) el.textContent = '无法加载图片列表: ' + err.message;
     }
@@ -195,10 +192,8 @@ function initApp(THREE) {
     content.innerHTML = '';
     files.forEach(f => {
       if (f.endsWith('.mp4') || f.endsWith('.webm')) {
-        // Video support
         const video = document.createElement('video');
-        video.src = './' + f;
-        video.alt = cat;
+        video.src = CDN_BASE + f;
         video.controls = true;
         video.style.width = '100%';
         video.style.height = 'auto';
@@ -206,9 +201,8 @@ function initApp(THREE) {
         video.style.marginBottom = '8px';
         content.appendChild(video);
       } else {
-        // Image
         const img = document.createElement('img');
-        img.src = './' + f;
+        img.src = CDN_BASE + f;
         img.alt = cat;
         content.appendChild(img);
       }
