@@ -1,24 +1,33 @@
 // Main JS: particle landing + gallery builder
 
-// Wait for THREE to load
-function waitForThree(timeout = 5000) {
-  return new Promise((resolve, reject) => {
-    const start = Date.now();
-    const check = () => {
-      if (window.THREE) resolve(window.THREE);
-      else if (Date.now() - start > timeout) reject(new Error('THREE.js load timeout'));
-      else requestAnimationFrame(check);
-    };
-    check();
-  });
-}
-
 // Initialize app
-window.addEventListener('DOMContentLoaded', () => {
-  waitForThree().then(THREE => initApp(THREE)).catch(err => {
-    console.error('Failed to load THREE.js:', err);
-    document.getElementById('butterfly-click').textContent = '加载失败，请刷新页面';
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for THREE to load
+  function waitForThree(timeout = 8000) {
+    return new Promise((resolve, reject) => {
+      const start = Date.now();
+      const check = () => {
+        if (window.THREE) {
+          resolve(window.THREE);
+        } else if (Date.now() - start > timeout) {
+          reject(new Error('THREE.js load timeout'));
+        } else {
+          setTimeout(check, 100);
+        }
+      };
+      check();
+    });
+  }
+
+  waitForThree()
+    .then(THREE => {
+      initApp(THREE);
+    })
+    .catch(err => {
+      console.error('Failed to load THREE.js:', err);
+      const cta = document.getElementById('butterfly-click');
+      if (cta) cta.textContent = '加载失败，请刷新页面';
+    });
 });
 
 function initApp(THREE) {
@@ -26,6 +35,11 @@ function initApp(THREE) {
   const cta = document.getElementById('butterfly-click');
   const site = document.getElementById('site');
   const landing = document.getElementById('landing');
+
+  if (!canvas || !cta || !site || !landing) {
+    console.error('Required DOM elements not found');
+    return;
+  }
 
   // THREE setup
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -134,8 +148,13 @@ function initApp(THREE) {
   async function buildGallery() {
     try {
       const res = await fetch('./images.json');
+      if (!res.ok) throw new Error('Failed to fetch images.json');
       const data = await res.json();
       const categoriesEl = document.getElementById('categories');
+      if (!categoriesEl) {
+        console.error('Categories element not found');
+        return;
+      }
       categoriesEl.innerHTML = '';
 
       for (const [cat, files] of Object.entries(data)) {
@@ -158,7 +177,8 @@ function initApp(THREE) {
       }
     } catch (err) {
       console.error('Failed to load images.json:', err);
-      document.getElementById('categories').textContent = '无法加载图片列表';
+      const el = document.getElementById('categories');
+      if (el) el.textContent = '无法加载图片列表: ' + err.message;
     }
   }
 
@@ -166,6 +186,11 @@ function initApp(THREE) {
     const modal = document.getElementById('modal');
     const content = document.getElementById('modal-content');
     const close = document.getElementById('modal-close');
+
+    if (!modal || !content || !close) {
+      console.error('Modal elements not found');
+      return;
+    }
 
     content.innerHTML = '';
     files.forEach(f => {
@@ -178,6 +203,7 @@ function initApp(THREE) {
         video.style.width = '100%';
         video.style.height = 'auto';
         video.style.borderRadius = '12px';
+        video.style.marginBottom = '8px';
         content.appendChild(video);
       } else {
         // Image
