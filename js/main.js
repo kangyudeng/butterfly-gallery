@@ -197,8 +197,7 @@ function initApp(THREE) {
         video.controls = true;
         video.style.width = '100%';
         video.style.height = 'auto';
-        video.style.borderRadius = '12px';
-        video.style.marginBottom = '8px';
+        video.style.gridColumn = 'span 1';
         content.appendChild(video);
       } else {
         const img = document.createElement('img');
