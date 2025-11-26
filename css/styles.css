@@ -1,0 +1,45 @@
+:root{
+  --bg:#0b0b0c;
+  --muted:#a8a8a8;
+  --accent:#ffd166;
+  --glass: rgba(255,255,255,0.04);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,var(--bg),#050506);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+#landing{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#landing-overlay{position:relative;z-index:2;pointer-events:none;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#cta{pointer-events:auto}
+#butterfly-click{background:var(--glass);backdrop-filter:blur(6px);padding:18px 30px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);font-size:18px;font-weight:600;cursor:pointer;transform:translateY(20px);opacity:0;transition:all .6s ease}
+
+.hidden{display:none}
+
+main#site{padding:48px;max-width:1200px;margin:0 auto;position:relative}
+.site-header{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.title{font-family:'Playfair Display',serif;margin:0;font-size:40px;letter-spacing:0.6px}
+.subtitle{margin:0;color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);box-shadow:0 6px 30px rgba(0,0,0,0.6);cursor:pointer;transition:transform .35s cubic-bezier(.2,.9,.2,1)}
+.card:hover{transform:translateY(-8px)}
+.card img{width:100%;height:320px;object-fit:cover;display:block}
+.card .label{padding:14px 16px;font-weight:600;background:linear-gradient(180deg,rgba(0,0,0,0.25),transparent);position:absolute;left:12px;bottom:12px;border-radius:8px}
+
+.modal{position:fixed;inset:0;background:rgba(2,2,2,0.85);display:flex;align-items:center;justify-content:center;padding:40px;z-index:50}
+.modal-content{max-width:1200px;max-height:80vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.modal img{width:100%;height:200px;object-fit:cover;border-radius:8px}
+.modal-close{position:absolute;top:20px;right:20px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+
+@media (max-width:720px){
+  .card img{height:200px}
+  .title{font-size:28px}
+}
